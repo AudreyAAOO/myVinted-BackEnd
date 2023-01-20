@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGODB_URI); // Pour se connecter à la BDD, sans 
 const signup = require("./routes/signup");
 const login = require("./routes/login");
 const publish = require("./routes/publish");
-const test = require("./routes/test");
+//const test = require("./routes/test");
 
 //! je demande à mon serveur d'utiliser les routes importées app.use ("");
 app.use(signup);

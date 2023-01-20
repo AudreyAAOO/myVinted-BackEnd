@@ -117,9 +117,9 @@ router.get("/offers", async (req, res) => {
 });
 
 router.get("/offer/:id", async (req, res) => {
-	//? url http://127.0.0.1:3000/offers/:id   
+	//? url http://127.0.0.1:3000/offers/:id
 	try {
-		const id = req.params.id    // ne pas noter les : dans Postman
+		const id = req.params.id; // ne pas noter les : dans Postman
 		//console.log(id);
 
 		const myResearchById = await Offer.findById(id)

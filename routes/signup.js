@@ -55,7 +55,7 @@ router.post("/user/signup", async (req, res) => {
 		});
 
 		await newUser.save();
-		res.json("Your account has been created");
+		res.json(newUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
