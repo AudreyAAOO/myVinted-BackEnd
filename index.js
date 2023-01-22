@@ -33,7 +33,7 @@ app.use(publish);
 //app.use(test);
 
 app.all("*", (req, res) => {
-	res.status(404).json({ message: "⚠️ This route doesn't exist" });
+	res.status(404).json({ message: "⚠️ This route doesn't exist !!! " });
 });
 
 app.listen(process.env.PORT, () => {
