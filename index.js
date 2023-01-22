@@ -17,8 +17,18 @@ app.use(express.json());
 app.use(cors()); //* le module cors permet d'autoriser ou non les demandes provenant de l'extérieur.
 
 //* se connecter à la BDD
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGODB_URI); // Pour se connecter à la BDD, sans préciser les identifiants
+const connectDatabase = async () => {
+	try {
+		mongoose.set("strictQuery", false);
+		await mongoose.connect(process.env.MONGODB_URI); // Pour se connecter à la BDD, sans préciser les identifiants
+		console.log("connected to database 🗃️ ");
+	} catch (error) {
+		console.log(error);
+		process.exit(1);
+	}
+};
+
+connectDatabase();
 
 //! import des routes
 const signup = require("./routes/signup");
