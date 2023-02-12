@@ -19,6 +19,8 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 
 	try {
 
+		//? Destructuring
+		const { username, email, newsletter, password } = req.body;
 
 		//todo cas d'erreur, l'email renseigné lors de l'inscription existe déjà dans la base de données
 		//* chercher l'élément concerné dans la collection USER (que l'on a importé ds le fichier)
@@ -37,7 +39,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 		}
 
 		// l'utilisateur a-t-il bien envoyé les informations requises ?
-		if (req.body.email && req.body.password && req.body.username) {
+		if (email && password && username) {
 			// Si oui, on peut créer ce nouvel utilisateur
 
 			// Étape 1 : encrypter le mot de passe
@@ -54,8 +56,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			//console.log("token: ", token);
 
 			// Étape 2 : créer le nouvel utilisateur
-			//? Destructuring
-			const { username, email, newsletter, password } = req.body;
+
 
 			const newUser = new User({
 				account: { username },
