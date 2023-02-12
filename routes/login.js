@@ -18,26 +18,29 @@ router.post("/user/login", async (req, res) => {
 		const { email, password } = req.body;
 
 		//todo Tester l'email:  (pour test :  "email": "antechrist@mail.com", "password": "fuckyou"
+		// Aller chercher le user dont le mail est celui reçu
 		const alreadyUser = await User.findOne({ email: email }); //{ email: req.body.email }
 		// attention si valeur nulle, va ds le catch si console.log(`-mail User: `, alreadyUser.email, alreadyUser);
-        
-		if (!alreadyUser) {
-			// 	si la recherche du mail ne renvoie rien
+
+		if (!alreadyUser) {// 	si la recherche du mail ne renvoie rien
 			return res
 				.status(401)
 				.json({ message: "⚠️ This email doesn't exist, please sign up" });
 		}
-
+		// Si on en trouve on continue
+		// Recréer un hash à partir du salt du user trouvé et du MDP reçu
+		console.log(user);
 		//! générer un hash
 		const newHash = SHA256(password + alreadyUser.salt).toString(
 			encBase64
 		);
 		console.log(`newHash:`, newHash);
-
+		// Si les hash sont différents on envoie une erreur
 		if (alreadyUser.hash !== newHash) {
 			return res.status(400).json({ message: "⚠️ Wrong password" });
 		}
-		const welcome = `Welcome to Vinted ${alreadyUser.account.username}, here is your token ${alreadyUser.token}`;
+		// Si ce hash est le même que le hash en BDD on autorise la connexion
+		const welcome = `Welcome to Vinted ${alreadyUser.account.username}, your ID is ${alreadyUser._id}, here is your token ${alreadyUser.token}`;
 
 		res.json(welcome); //`Welcome ${username}`
 	} catch (error) {

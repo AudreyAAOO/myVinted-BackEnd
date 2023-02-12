@@ -26,6 +26,7 @@ const Offer = mongoose.model("Offer", {
 	// manque emplacement
 	product_city: String,
 	product_image: Object,
+	product_pictures: Array,
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",

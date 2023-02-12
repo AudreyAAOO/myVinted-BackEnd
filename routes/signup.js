@@ -18,11 +18,15 @@ router.post("/user/signup", async (req, res) => {
 	try {
 		//? Destructuring
 		const { username, email, newsletter, password } = req.body;
-		
+
 
 		//todo cas d'erreur, le username n'est pas renseigné
-		if (username === "" || username === undefined) { // if (!username || !email || !password || typeof newsletter !=="boolean")
-			return res.status(400).json({ message: "⚠️ Don't forget your username !" });
+		// if (username === "" || username === undefined) { 
+		// 	return res.status(400).json({ message: "⚠️ Don't forget your username !" });
+		// }
+		// mieux ainsi :
+		if (!username || !email || !password || typeof newsletter !== "boolean") {
+			return res.status(400).json({ message: "⚠️  Missing parameter" });
 		}
 
 		//! générer un salt
@@ -55,7 +59,12 @@ router.post("/user/signup", async (req, res) => {
 		});
 
 		await newUser.save();
-		res.json(newUser);
+		const response = {
+			_id: newUser._id,
+			account: newUser.account,
+			token: newUser.token,
+		};
+		res.json(response);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

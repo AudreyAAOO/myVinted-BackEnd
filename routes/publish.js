@@ -24,20 +24,17 @@ cloudinary.config({
 	secure: true,
 });
 //!
-//todo création d'une route pour publier une annonce  url http://127.0.0.1:3000/user/publish
 
-//! On positionne le middleware `fileUpload` dans la route `/publish`
+//todo création d'une route pour publier une annonce  url http://127.0.0.1:3000/user/publish
 router.post(
-	"/user/publish",
+	"/offer/publish",
 	isAuthenticated,
-	fileUpload(),
+	fileUpload(),//! On positionne le middleware `fileUpload` dans la route `/publish`
 	async (req, res) => {
 		try {
 			//console.log(req.files); //! uploader la photo sur Cloudinary
-			const pictureToUpload = req.files.picture;
-			const result = await cloudinary.uploader.upload(
-				convertToBase64(pictureToUpload) // {folder: "./pictures",}
-			);
+
+
 
 			// afficher les fichiers reçus
 			//console.log(req.body); // Les champs textuels du body sont disponibles dans req.body
@@ -54,34 +51,84 @@ router.post(
 			const { title, description, price, brand, size, color, city, condition } =
 				req.body;
 
-			//todo je crée une nouvelle annonce
-			const newOffer = new Offer({
-				product_name: title,
-				product_description: description,
-				product_price: price,
-				product_city: city,
-				product_details: {
-					product_brand: brand,
-					product_size: size,
-					product_color: color,
-					product_condition: condition,
-				},
-				product_image: result,
-				owner: req.user, // Mongoose comprend que c'est une réf et n'enregistre que l'_id  = req.user._id
+			if (title && price && req.files?.picture) {
+				//todo je crée une nouvelle annonce sans l'image
+				const newOffer = new Offer({
+					product_name: title,
+					product_description: description,
+					product_price: price,
+					product_city: city,
+					product_details: {
+						product_brand: brand,
+						product_size: size,
+						product_color: color,
+						product_condition: condition,
+					},
 
-				date_of_offer: new Date(),
-			});
+					owner: req.user, // Mongoose comprend que c'est une réf et n'enregistre que l'_id  = req.user._id
 
-			//console.log(newOffer);
+					date_of_offer: new Date(),
+				});
 
-			await newOffer.save();
-			res.json(newOffer);
+				// Si on ne reçoit qu'une image (req.files.picture n'est donc pas un tableau)
+				if (!Array.isArray(req.files.picture)) {
+					// On vérifie qu'on a bien affaire à une image
+					if (req.files.picture.mimetype.slice(0, 5) !== "image") {
+						return res.status(400).json({ message: "You must send images" });
+					}
+
+					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
+						convertToBase64(req.files.picture) // {folder: "./pictures",}
+					);
+					// ajout de l'image dans newOffer
+					newOffer.product_image = result;
+					newOffer.product_pictures.push(result);
+				} else {
+					// Si on a affaire à un tableau
+					for (let i = 0; i < req.files.picture.length; i++) {
+						const picture = req.files.picture[i];
+						if (picture.mimetype.slice(0, 5) !== "image") {
+							return res.status(400).json({ message: "You must send images" });
+						}
+						if (i === 0) {
+							// On envoie la première image à cloudinary et on en fait l'image principale (product_image)
+							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
+								convertToBase64(picture)
+							);
+							// ajout de l'image dans newOffer
+							newOffer.product_image = result;
+							newOffer.product_pictures.push(result);
+						} else {
+							// On envoie toutes les autres à cloudinary et on met les résultats dans product_pictures
+							const result = await cloudinary.uploader.upload(
+								convertToBase64(picture),
+								//   {
+								// 	folder: `api/vinted-v2/offers/${newOffer._id}`,
+								//   }
+							);
+							newOffer.product_pictures.push(result);
+						}
+					}
+				}
+
+				await newOffer.save();
+
+				res.json(newOffer);
+
+			} else {
+				res
+					.status(400)
+					.json({ message: "title, price and picture are required" });
+			}
+
 		} catch (error) {
 			res.status(400).json({ message: error.message });
 		}
 	}
 );
 
+// Route qui nous permet de récupérer une liste d'annonces, en fonction de filtres
+// Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
 router.get("/offers", async (req, res) => {
 	//? url http://127.0.0.1:3000/offers
 	try {
@@ -116,6 +163,7 @@ router.get("/offers", async (req, res) => {
 	}
 });
 
+// Route qui permmet de récupérer les informations d'une offre en fonction de son id
 router.get("/offer/:id", async (req, res) => {
 	//? url http://127.0.0.1:3000/offers/:id
 	try {
