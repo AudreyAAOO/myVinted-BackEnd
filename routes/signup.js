@@ -30,13 +30,13 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			return res.status(409).json({ message: "⚠️ This email is already used" });
 		}
 		//todo cas d'erreur, le username n'est pas renseigné
-		// if (username === "" || username === undefined) { 
-		// 	return res.status(400).json({ message: "⚠️ Don't forget your username !" });
-		// }
-		// mieux ainsi :
-		if (!username || !email || !password || typeof newsletter !== "boolean") {
-			return res.status(400).json({ message: "⚠️  Missing parameter  ⚠️ " });
+		if (username === "" || username === undefined) { 
+			return res.status(400).json({ message: "⚠️ Don't forget your username !" });
 		}
+		// mieux ainsi :
+		// if (!username || !email || !password || typeof newsletter !== "boolean") {
+		// 	return res.status(400).json({ message: "⚠️  Missing parameter  ⚠️ " });
+		// }
 
 		// l'utilisateur a-t-il bien envoyé les informations requises ?
 		if (email && password && username) {
