@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 
 //todo création d'un modèle
 const User = mongoose.model("User", {
-	email: { type: String, required: true },
+	email: { type: String, unique: true }, // `email` must be unique
 	account: {
-		username: { type: String, default: `PseudoSympa` },
-		avatar: Object, // nous verrons plus tard comment uploader une image
+		username: { type: String, required: true },
+		avatar: Object, 
 	},
-	newsletter: { type: Boolean, default: true },
+	newsletter: { type: Boolean, default: false },
 	token: String,
 	hash: String,
 	salt: String,
