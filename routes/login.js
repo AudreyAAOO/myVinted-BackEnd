@@ -29,7 +29,7 @@ router.post("/user/login", async (req, res) => {
 		}
 		// Si on en trouve on continue
 		// Recréer un hash à partir du salt du user trouvé et du MDP reçu
-		console.log(user);
+		console.log(alreadyUser);
 		//! générer un hash
 		const newHash = SHA256(password + alreadyUser.salt).toString(
 			encBase64
