@@ -3,6 +3,8 @@ const uid2 = require("uid2"); //?  package qui génère une chaîne de caractèr
 //? crypto-js est une librairie d'algorithmes cryptographiques.
 const SHA256 = require("crypto-js/sha256"); //? package pour encrypter une string
 const encBase64 = require("crypto-js/enc-base64"); //? package pour transformer l'encryptage en string
+const fileUpload = require("express-fileupload"); // Import de fileupload qui nous permet de recevoir des formdata
+const cloudinary = require("cloudinary").v2;
 
 const router = express.Router(); //? déclarer les routes
 
@@ -88,12 +90,12 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			// l'utilisateur n'a pas envoyé les informations requises ?
 			res.status(400).json({ message: "Missing parameters" });
 		}
-	
-		} catch (error) {
-			console.log(error.message);
-			res.status(400).json({ message: error.message });
-}
-	});
+
+	} catch (error) {
+		console.log(error.message);
+		res.status(400).json({ message: error.message });
+	}
+});
 
 //! export de mes routes
 module.exports = router;
