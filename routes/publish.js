@@ -140,43 +140,101 @@ router.get("/offers", async (req, res) => {
 		//! Trier les résultats ds l'ordre croissant
 		//const results = await Offer.find().sort({product_price: 1}).select("product_name product_price"); // select () pour n'afficher que certains éléments
 
+		//! création d'un objet dans lequel on va stocker nos différents filtres
+		let filters = {};
+
+		if (req.query.title) {
+			filters.product_name = new RegExp(req.query.title, "i");
+		}
+
+		if (req.query.priceMin) {
+			filters.product_price = {
+				$gte: req.query.priceMin,
+			};
+		}
+
+		if (req.query.priceMax) {
+			if (filters.product_price) {
+				filters.product_price.$lte = req.query.priceMax;
+			} else {
+				filters.product_price = {
+					$lte: req.query.priceMax,
+				};
+			}
+		}
+
+		let sort = {};
+
+		if (req.query.sort === "price-desc") {
+			sort = { product_price: -1 };
+		} else if (req.query.sort === "price-asc") {
+			sort = { product_price: 1 };
+		}
+
+		let page;
+
+		if (Number(req.query.page) < 1) {
+			page = 1;
+		} else {
+			page = Number(req.query.page);
+		}
 		//   SKIP ET LIMIT
+		let limit = Number(req.query.limit);
+
 		//.skip(10) // = sauter l'affichage des 10 premières annonces
-		const myResearch = await Offer.find(
-			{ product_name: new RegExp("sac", "i") },
-			{ product_price: { $gte: 50, $lte: 150 } }
+		const offers = await Offer.find((filters)
+			// { product_name: new RegExp("sac", "i") },
+			// { product_price: { $gte: 50, $lte: 150 } }
 		)
-			.sort({ product_price: 1 })
-			.select("product_name product_price")
-			.limit(2)
-			.select("product_name product_price")
-			.populate("owner", "account");
+			.sort(sort)
+			.limit(limit) // renvoyer y résultats
+			.skip((page - 1) * limit) // ignorer les x résultats
+			// .select("product_name product_price")
+			.populate({
+				path: "owner",
+				select: "account",
+			})
 		//.countDocuments();
 		//si countDocuments < limit log myResearch> skip nbr de docs en limit
 		// if (myResearch > 1) {
 		// 	console.log("if", myResearch.countDocuments);
 		// }
-		console.log(myResearch);
-		res.json(myResearch);
+
+		// cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
+		const count = await Offer.countDocuments(filters);
+
+		console.log(offers);
+		res.json({
+			count: count,
+			offers: offers,
+		});
+
 	} catch (error) {
+		console.log(error.message);
 		res.status(400).json({ message: error.message });
 	}
 });
 
 // Route qui permmet de récupérer les informations d'une offre en fonction de son id
 router.get("/offer/:id", async (req, res) => {
-	//? url http://127.0.0.1:3000/offers/:id
+	//? url http://127.0.0.1:3000/offer/:id
 	try {
 		const id = req.params.id; // ne pas noter les : dans Postman
 		//console.log(id);
 
-		const myResearchById = await Offer.findById(id)
+		const offer = await Offer.findById(id)
 			//.select("_id product_details owner")
-			.populate("owner", "account");
+			.populate({
+				path: "owner",
+				select: "account.username account.phone account.avatar",
+			});
 
-		//console.log(myResearchById);
-		res.json(myResearchById);
+		console.log("offer:", offer);
+
+		res.json(offer);
+
 	} catch (error) {
+		console.log(error.message);
 		res.status(400).json({ message: error.message });
 	}
 });
