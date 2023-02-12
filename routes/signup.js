@@ -5,7 +5,7 @@ const SHA256 = require("crypto-js/sha256"); //? package pour encrypter une strin
 const encBase64 = require("crypto-js/enc-base64"); //? package pour transformer l'encryptage en string
 const fileUpload = require("express-fileupload"); // Import de fileupload qui nous permet de recevoir des formdata
 const cloudinary = require("cloudinary").v2;
-
+const convertToBase64 = require("../utils/convertToBase64");
 const router = express.Router(); //? déclarer les routes
 
 //! import du model 'User'
@@ -30,7 +30,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			return res.status(409).json({ message: "⚠️ This email is already used" });
 		}
 		//todo cas d'erreur, le username n'est pas renseigné
-		if (username === "" || username === undefined) { 
+		if (username === "" || username === undefined) {
 			return res.status(400).json({ message: "⚠️ Don't forget your username !" });
 		}
 		// mieux ainsi :
