@@ -73,15 +73,16 @@ router.post(
 				// Si on ne reçoit qu'une image (req.files.picture n'est donc pas un tableau)
 				if (!Array.isArray(req.files.picture)) {
 					// On vérifie qu'on a bien affaire à une image
-					// if (req.files.picture.mimetype.slice(0, 5) !== "image") {
-					// 	return res.status(400).json({ message: "You must send images" });
-					// }
+					if (req.files.picture.mimetype.slice(0, 5) !== "image") { // vérifier si les 5 premiers caractères de la clé mimetype forme le mot 'image'
+						return res.status(400).json({ message: "You must send images" });
+					}
 
 					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 						convertToBase64(req.files.picture),
 						{
 							folder: `Vinted/${newOffer._id}`,
-							public_id: "preview",
+							//folder: `Vinted/`,
+							public_id: "preview", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -89,7 +90,7 @@ router.post(
 					newOffer.product_image = result;
 					newOffer.product_pictures.push(result);
 				} else {
-					// Si on a affaire à un tableau
+					// Si on a affaire à un tableau = plusieurs images
 
 					for (let i = 0; i < req.files.picture.length; i++) {
 						const picture = req.files.picture[i];
