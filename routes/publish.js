@@ -68,7 +68,7 @@ router.post(
 
 					owner: req.user, // Mongoose comprend que c'est une réf et n'enregistre que l'_id  = req.user._id
 
-					date_of_offer: new Date(),
+					//date_of_offer: new Date(),
 				});
 
 				// Si on ne reçoit qu'une image (req.files.picture n'est donc pas un tableau)
@@ -96,9 +96,9 @@ router.post(
 					for (let i = 0; i < req.files.picture.length; i++) {
 						const picture = req.files.picture[i];
 
-						// if (picture.mimetype.slice(0, 5) !== "image") {
-						// 	return res.status(400).json({ message: "You must send images" });
-						// }
+						if (picture.mimetype.slice(0, 5) !== "image") {
+							return res.status(400).json({ message: "You must send images" });
+						}
 
 						if (i === 0) {
 							// On envoie la première image à cloudinary et on en fait l'image principale (product_image)
