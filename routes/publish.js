@@ -58,12 +58,13 @@ router.post(
 					product_description: description,
 					product_price: price,
 					product_city: city,
-					product_details: {
-						product_brand: brand,
-						product_size: size,
-						product_color: color,
-						product_condition: condition,
-					},
+					product_details: [
+						{ MARQUE: brand },
+						{ TAILLE: size },
+						{ ÉTAT: condition },
+						{ COULEUR: color },
+						{ EMPLACEMENT: city },
+					],
 
 					owner: req.user, // Mongoose comprend que c'est une réf et n'enregistre que l'_id  = req.user._id
 

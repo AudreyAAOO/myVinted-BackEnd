@@ -8,12 +8,12 @@ const Offer = mongoose.model("Offer", {
 	product_price: { type: Number, min: 0, max: 100000 },
 	product_details: Array,
 	product_city: String,
-	product_image: { type: mongoose.Schema.Types.Mixed, default: {} },
 	product_pictures: Array,
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 	},
+	product_image: { type: mongoose.Schema.Types.Mixed, default: {} },
 	date_of_offer: String,
 });
 
