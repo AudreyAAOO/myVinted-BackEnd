@@ -29,7 +29,7 @@ cloudinary.config({
 router.post(
 	"/offer/publish",
 	isAuthenticated,
-	fileUpload(),//! On positionne le middleware `fileUpload` dans la route `/publish`
+	fileUpload(),   //! On positionne le middleware `fileUpload` dans la route `/publish`
 	async (req, res) => {
 		try {
 			//console.log(req.files); //! uploader la photo sur Cloudinary
@@ -73,29 +73,41 @@ router.post(
 				// Si on ne reçoit qu'une image (req.files.picture n'est donc pas un tableau)
 				if (!Array.isArray(req.files.picture)) {
 					// On vérifie qu'on a bien affaire à une image
-					if (req.files.picture.mimetype.slice(0, 5) !== "image") {
-						return res.status(400).json({ message: "You must send images" });
-					}
+					// if (req.files.picture.mimetype.slice(0, 5) !== "image") {
+					// 	return res.status(400).json({ message: "You must send images" });
+					// }
 
 					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 						convertToBase64(req.files.picture),
-						{ folder: "./Vinted" }
+						{
+							folder: `Vinted/${newOffer._id}`,
+							public_id: "preview",
+						}
 					);
+
 					// ajout de l'image dans newOffer
 					newOffer.product_image = result;
 					newOffer.product_pictures.push(result);
 				} else {
 					// Si on a affaire à un tableau
+
 					for (let i = 0; i < req.files.picture.length; i++) {
 						const picture = req.files.picture[i];
-						if (picture.mimetype.slice(0, 5) !== "image") {
-							return res.status(400).json({ message: "You must send images" });
-						}
+
+						// if (picture.mimetype.slice(0, 5) !== "image") {
+						// 	return res.status(400).json({ message: "You must send images" });
+						// }
+
 						if (i === 0) {
 							// On envoie la première image à cloudinary et on en fait l'image principale (product_image)
 							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
-								convertToBase64(picture)
-							);
+								convertToBase64(picture), {
+								folder: `Vinted/${newOffer._id}`,
+								public_id: "preview",
+							});
+
+
+
 							// ajout de l'image dans newOffer
 							newOffer.product_image = result;
 							newOffer.product_pictures.push(result);
@@ -103,9 +115,10 @@ router.post(
 							// On envoie toutes les autres à cloudinary et on met les résultats dans product_pictures
 							const result = await cloudinary.uploader.upload(
 								convertToBase64(picture),
-								//   {
-								// 	folder: `api/vinted-v2/offers/${newOffer._id}`,
-								//   }
+								{
+									folder: `Vinted/${newOffer._id}`,
+									public_id: "preview",
+								}
 							);
 							newOffer.product_pictures.push(result);
 						}
@@ -123,6 +136,7 @@ router.post(
 			}
 
 		} catch (error) {
+			console.log(error.message);
 			res.status(400).json({ message: error.message });
 		}
 	}
