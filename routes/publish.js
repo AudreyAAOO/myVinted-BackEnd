@@ -92,7 +92,6 @@ router.post(
 					newOffer.product_pictures.push(result);
 				} else {
 					// Si on a affaire à un tableau = plusieurs images
-
 					for (let i = 0; i < req.files.picture.length; i++) {
 						const picture = req.files.picture[i];
 
@@ -105,7 +104,6 @@ router.post(
 							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 								convertToBase64(picture), {
 								folder: `Vinted/${newOffer._id}`,
-								public_id: "preview",
 							});
 
 
@@ -119,7 +117,6 @@ router.post(
 								convertToBase64(picture),
 								{
 									folder: `Vinted/${newOffer._id}`,
-									public_id: "preview",
 								}
 							);
 							newOffer.product_pictures.push(result);
