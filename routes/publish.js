@@ -78,7 +78,8 @@ router.post(
 					}
 
 					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
-						convertToBase64(req.files.picture) // {folder: "./pictures",}
+						convertToBase64(req.files.picture),
+						{ folder: "./Vinted" }
 					);
 					// ajout de l'image dans newOffer
 					newOffer.product_image = result;
