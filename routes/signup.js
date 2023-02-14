@@ -27,7 +27,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 		const isEmailAlreadyExist = await User.findOne({ email });
 		//console.log(email, isEmailAlreadyExist);
 		if (isEmailAlreadyExist) {
-			return res.status(409).json({ message: "⚠️ This email already has an account" });
+			return res.status(409).json({ message: "This email already has an account" });
 		}
 		//todo cas d'erreur, le username n'est pas renseigné
 		if (username === "" || username === undefined) {

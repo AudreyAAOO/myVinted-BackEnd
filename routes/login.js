@@ -40,9 +40,13 @@ router.post("/user/login", async (req, res) => {
 			return res.status(400).json({ message: "⚠️ Wrong password" });
 		}
 		// Si ce hash est le même que le hash en BDD on autorise la connexion
-		const welcome = `Welcome to Vinted ${alreadyUser.account.username}, your ID is ${alreadyUser._id}, here is your token ${alreadyUser.token}`;
+		res.status(200).json({
+			_id: alreadyUser._id,
+			token: alreadyUser.token,
+			account: alreadyUser.account,
+		})
 
-		res.json(welcome); //`Welcome ${username}`
+
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
