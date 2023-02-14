@@ -52,7 +52,7 @@ router.post(
 			const { title, description, price, brand, size, color, city, condition } =
 				req.body;
 
-			if (title && price && req.files.picture) {  //req.files?.picture
+			if (title && price && req.files.picture) { 
 				//todo je crée une nouvelle annonce sans l'image
 				const newOffer = new Offer({
 					product_name: title,

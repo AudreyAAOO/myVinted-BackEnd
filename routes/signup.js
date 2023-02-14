@@ -68,11 +68,10 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			});
 
 
-			// Si je reçois une image, je l'upload sur cloudinary et j'enregistre le résultat dans la clef avatar de la clef account de mon nouvel utilisateur
+			// Si je reçois un avatar, je l'upload sur cloudinary et j'enregistre le résultat dans la clef avatar de la clef account de mon nouvel utilisateur
 			if (req.files.avatar) {
 				const result = await cloudinary.uploader.upload(
 					convertToBase64(req.files.avatar),
-
 				);
 				newUser.account.avatar = result;
 			}
