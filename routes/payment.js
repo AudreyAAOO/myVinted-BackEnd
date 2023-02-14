@@ -13,8 +13,8 @@ router.post("/payment", async (req, res) => {
         const responseFromStripe = await stripe.charges.create({
             amount: 2000,
             currency: "eur",
-            title: { title },
-            description: { description },
+            title: "titre",
+            description: "description",
             token: stripeToken,// On envoie ici le token
         });
         console.log(response.status);
