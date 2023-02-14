@@ -1,6 +1,7 @@
 const express = require("express");
+const cors = require("cors");
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET);
-
+// REACT_APP_STRIPE_SECRET_KEY
 const router = express.Router(); //? déclarer les routes
 
 router.post("/payment", async (req, res) => {
@@ -14,8 +15,9 @@ router.post("/payment", async (req, res) => {
             amount: req.body.amount,
             currency: "eur",
             // title: "titre",
-            description: `req.body.title`,
-            source: stripeToken,// On envoie ici le token
+            description: req.body.title,
+            source: stripeToken,  // On envoie ici le token
+
         });
         console.log(response.status);
 
@@ -28,7 +30,7 @@ router.post("/payment", async (req, res) => {
 
 
         // Je renvoie au client le status de la réponse de stripe
-        // res.json(responseFromStripe.status);
+        res.json(responseFromStripe.status);
         res.json(response);
     } catch (error) {
         console.log(error.message);
