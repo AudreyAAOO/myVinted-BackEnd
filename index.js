@@ -1,8 +1,7 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const morgan = require("morgan");// affiche des logs de connexion
+const morgan = require("morgan"); // affiche des logs de connexion
 
 //const uid2 = require("uid2"); //?  package qui génère une chaîne de caractères aléatoires
 //? crypto-js est une librairie d'algorithmes cryptographiques.
@@ -38,12 +37,15 @@ connectDatabase();
 const signup = require("./routes/signup");
 const login = require("./routes/login");
 const publish = require("./routes/publish");
+const payment = require(".routes/payment");
 //const test = require("./routes/test");
+
 
 //! je demande à mon serveur d'utiliser les routes importées app.use ("");
 app.use(signup);
 app.use(login);
 app.use(publish);
+app.use(payment);
 //app.use(test);
 
 

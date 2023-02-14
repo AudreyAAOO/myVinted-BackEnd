@@ -12,6 +12,7 @@ const router = express.Router(); //? déclarer les routes
 const User = require("../models/User");
 //* import du model 'Offer'
 const Offer = require("../models/Offer");
+
 //! import du middleware isAuthenticated
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const convertToBase64 = require("../utils/convertToBase64");
