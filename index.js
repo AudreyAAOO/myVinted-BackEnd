@@ -1,8 +1,8 @@
-require.dotenv("").config(); // affiche des logs de connexion
+require("dotenv").config(); // affiche des logs de connexion
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+const morgan = require("morgan");
 
 //const uid2 = require("uid2"); //?  package qui génère une chaîne de caractères aléatoires
 //? crypto-js est une librairie d'algorithmes cryptographiques.
