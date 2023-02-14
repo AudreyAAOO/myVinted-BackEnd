@@ -1,8 +1,8 @@
-require("dotenv").config(); // affiche des logs de connexion
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const morgan = require("morgan");
+const morgan = require("morgan");// affiche des logs de connexion
 
 //const uid2 = require("uid2"); //?  package qui génère une chaîne de caractères aléatoires
 //? crypto-js est une librairie d'algorithmes cryptographiques.
@@ -18,6 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors()); //* le module cors permet d'autoriser ou non les demandes provenant de l'extérieur.
+
 
 //* se connecter à la BDD
 const connectDatabase = async () => {
