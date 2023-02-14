@@ -16,7 +16,7 @@ const app = express();
 
 //* récupérer les paramètres de type Body
 app.use(express.json());
-
+app.use(morgan("dev"));
 app.use(cors()); //* le module cors permet d'autoriser ou non les demandes provenant de l'extérieur.
 
 //* se connecter à la BDD
