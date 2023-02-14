@@ -1,6 +1,9 @@
+require.dotenv("").config(); // affiche des logs de connexion
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
+
 //const uid2 = require("uid2"); //?  package qui génère une chaîne de caractères aléatoires
 //? crypto-js est une librairie d'algorithmes cryptographiques.
 //const SHA256 = require("crypto-js/sha256"); //? package pour encrypter une string
@@ -45,7 +48,7 @@ app.use(publish);
 
 app.get("/", (req, res) => {
 	res.json("👩‍💻 Bienvenue sur l'API myVinted d'Audrey 👾");
-  });
+});
 
 app.all("*", (req, res) => {
 	res.status(404).json({ message: "⚠️ This route doesn't exist !!! ⚠️" });
