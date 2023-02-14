@@ -11,11 +11,11 @@ router.post("/payment", async (req, res) => {
 
         // Créer une requête à stripe pour créer une transaction
         const responseFromStripe = await stripe.charges.create({
-            amount: 2000,
+            amount: req.body.amount,
             currency: "eur",
-            title: "titre",
-            description: "description",
-            token: stripeToken,// On envoie ici le token
+            // title: "titre",
+            description: `req.body.title`,
+            source: stripeToken,// On envoie ici le token
         });
         console.log(response.status);
 
@@ -28,9 +28,10 @@ router.post("/payment", async (req, res) => {
 
 
         // Je renvoie au client le status de la réponse de stripe
-        res.json(responseFromStripe.status);
+        // res.json(responseFromStripe.status);
         res.json(response);
     } catch (error) {
+        console.log(error.message);
         res.status(400).json({ message: error.message });
     }
 });
