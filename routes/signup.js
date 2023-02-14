@@ -27,11 +27,11 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 		const isEmailAlreadyExist = await User.findOne({ email });
 		//console.log(email, isEmailAlreadyExist);
 		if (isEmailAlreadyExist) {
-			return res.status(409).json({ message: "⚠️ This email is already used" });
+			return res.status(409).json({ message: "⚠️ This email already has an account" });
 		}
 		//todo cas d'erreur, le username n'est pas renseigné
 		if (username === "" || username === undefined) {
-			return res.status(400).json({ message: "⚠️ Don't forget your username !" });
+			return res.status(400).json({ message: "Missing parameters" });
 		}
 		// mieux ainsi :
 		// if (!username || !email || !password || typeof newsletter !== "boolean") {
@@ -72,6 +72,11 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			if (req.files.avatar) {
 				const result = await cloudinary.uploader.upload(
 					convertToBase64(req.files.avatar),
+					// 	{
+					// 		//folder: `Vinted/${newOffer._id}`,
+					// 		folder: `Vinted/`,
+					// 		public_id: "preview", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+					// 	 }
 				);
 				newUser.account.avatar = result;
 			}

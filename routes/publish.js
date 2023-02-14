@@ -82,8 +82,8 @@ router.post(
 					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 						convertToBase64(req.files.picture),
 						{
-							folder: `Vinted/${newOffer._id}`,
-							//folder: `Vinted/`,
+							//folder: `Vinted/${newOffer._id}`,
+							folder: `Vinted/`,
 							public_id: "preview", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
