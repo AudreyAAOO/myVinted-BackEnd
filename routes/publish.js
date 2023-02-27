@@ -104,7 +104,7 @@ router.post(
 								{
 									//folder: `Vinted/${newOffer._id}`,
 									folder: `Vinted/VintedOffers/Array_Images`,
-									public_id: `imgs_offer${newOffer.username} + ${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									public_id: `imgs_offer${newOffer.product_name}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 
 							// ajout de l'image dans newOffer
@@ -116,7 +116,7 @@ router.post(
 								convertToBase64(picture),
 								{
 									folder: `Vinted/VintedOffers/Array_Images`,
-									public_id: `imgs_offer${newOffer.username} + ${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									public_id: `imgs_offer${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 							newOffer.product_pictures.push(result);
 						}
@@ -134,7 +134,7 @@ router.post(
 			}
 
 		} catch (error) {
-			console.log(error.message);
+			console.log(error.response.data);
 			res.status(400).json({ message: error.message });
 		}
 	}
