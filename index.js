@@ -15,7 +15,9 @@ const app = express();
 
 //* récupérer les paramètres de type Body
 app.use(express.json());
+
 app.use(morgan("dev"));
+
 app.use(cors()); //* le module cors permet d'autoriser ou non les demandes provenant de l'extérieur.
 
 
@@ -37,7 +39,7 @@ connectDatabase();
 const signup = require("./routes/signup");
 const login = require("./routes/login");
 const publish = require("./routes/publish");
-const payment = require(".routes/payment");
+const payment = require("./routes/payment");
 //const test = require("./routes/test");
 
 
@@ -57,6 +59,6 @@ app.all("*", (req, res) => {
 	res.status(404).json({ message: "⚠️ This route doesn't exist !!! ⚠️" });
 });
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 3100, () => {
 	console.log(" 🚀 Server started !!! 🚀");
 });

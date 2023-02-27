@@ -1,10 +1,6 @@
 const express = require("express"); //? import de express
-
-//const uid2 = require("uid2");
-//const SHA256 = require("crypto-js/sha256");
-//const encBase64 = require("crypto-js/enc-base64");
 const fileUpload = require("express-fileupload"); // Import de fileupload qui nous permet de recevoir des formdata
-const cloudinary = require("cloudinary").v2; // Import de cloudinary
+const cloudinary = require("cloudinary").v2;
 
 const router = express.Router(); //? déclarer les routes
 
@@ -25,35 +21,34 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 	secure: true,
 });
-//!
 
 //todo création d'une route pour publier une annonce  url http://127.0.0.1:3000/user/publish
 router.post(
 	"/offer/publish",
 	isAuthenticated,
-	fileUpload(),   //! On positionne le middleware `fileUpload` dans la route `/publish`
+	fileUpload(),
 	async (req, res) => {
 		try {
-			//console.log(req.files); //! uploader la photo sur Cloudinary
-
-
-
-			// afficher les fichiers reçus
-			//console.log(req.body); // Les champs textuels du body sont disponibles dans req.body
 			// Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
+			//console.log(req.files); // afficher les fichiers reçus
+
+			// Les champs textuels du body sont disponibles dans req.body
+			//console.log(req.body); 
+
 			// J'ai accès à req.user. Clef que j'ai stockée dans req dans le middleware isAuthenticated
 			//console.log(req.user);
 
-			// Je converti le fichier reçu en base64 et j'envoie l'image sur cloudinary dans un dossier image-andromeda23
-			//todo je vais vérifier si l'utilisateur est inscrit et loggué
+			// Je converti le fichier reçu en base64 et j'envoie l'image sur cloudinary
+
+			//todo vérifier si l'utilisateur est inscrit et loggué
 			// const user = User.findOne({token});
-			// console.log(user);
+			console.log(user);
 
 			//* destructuring
 			const { title, description, price, brand, size, color, city, condition } =
 				req.body;
 
-			if (title && price && req.files.picture) { 
+			if (title && price && req.files.picture) {
 				//todo je crée une nouvelle annonce sans l'image
 				const newOffer = new Offer({
 					product_name: title,
@@ -84,8 +79,8 @@ router.post(
 						convertToBase64(req.files.picture),
 						{
 							//folder: `Vinted/${newOffer._id}`,
-							folder: `Vinted/`,
-							public_id: "preview", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							folder: `Vinted/VintedOffers`,
+							public_id: `img_offer${newOffer.username}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -93,7 +88,8 @@ router.post(
 					newOffer.product_image = result;
 					newOffer.product_pictures.push(result);
 				} else {
-					// Si on a affaire à un tableau = plusieurs images
+
+					//! Si on reçoit plusieurs images donc on a affaire à un tableau
 					for (let i = 0; i < req.files.picture.length; i++) {
 						const picture = req.files.picture[i];
 
@@ -104,11 +100,12 @@ router.post(
 						if (i === 0) {
 							// On envoie la première image à cloudinary et on en fait l'image principale (product_image)
 							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
-								convertToBase64(picture), {
-								folder: `Vinted/${newOffer._id}`,
-							});
-
-
+								convertToBase64(picture),
+								{
+									//folder: `Vinted/${newOffer._id}`,
+									folder: `Vinted/VintedOffers/Array_Images`,
+									public_id: `imgs_offer${newOffer.username} + ${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+								});
 
 							// ajout de l'image dans newOffer
 							newOffer.product_image = result;
@@ -118,9 +115,9 @@ router.post(
 							const result = await cloudinary.uploader.upload(
 								convertToBase64(picture),
 								{
-									folder: `Vinted/${newOffer._id}`,
-								}
-							);
+									folder: `Vinted/VintedOffers/Array_Images`,
+									public_id: `imgs_offer${newOffer.username} + ${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+								});
 							newOffer.product_pictures.push(result);
 						}
 					}

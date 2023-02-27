@@ -56,8 +56,6 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			//console.log("token: ", token);
 
 			// Étape 2 : créer le nouvel utilisateur
-
-
 			const newUser = new User({
 				account: { username },
 				email,
@@ -72,11 +70,11 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 			if (req.files.avatar) {
 				const result = await cloudinary.uploader.upload(
 					convertToBase64(req.files.avatar),
-					// 	{
-					// 		//folder: `Vinted/${newOffer._id}`,
-					// 		folder: `Vinted/`,
-					// 		public_id: "preview", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
-					// 	 }
+						{
+							//folder: `Vinted/${newOffer._id}`,
+							folder: `Vinted/VintedAvatars`,
+							public_id: "avatar_img", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+						 }
 				);
 				newUser.account.avatar = result;
 			}
