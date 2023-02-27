@@ -29,6 +29,7 @@ router.post(
 	fileUpload(),
 	async (req, res) => {
 		try {
+			console.log("je suis dans ma route");
 			// Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
 			//console.log(req.files); // afficher les fichiers reçus
 
