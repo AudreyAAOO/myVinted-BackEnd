@@ -31,7 +31,7 @@ router.post(
 		try {
 			console.log("je suis dans ma route");
 			// Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
-			//console.log(req.files); // afficher les fichiers reçus
+			console.log(req.files); // afficher les fichiers reçus
 
 			// Les champs textuels du body sont disponibles dans req.body
 			//console.log(req.body); 
@@ -43,7 +43,7 @@ router.post(
 
 			//todo vérifier si l'utilisateur est inscrit et loggué
 			// const user = User.findOne({token});
-			console.log(user);
+			// console.log("user: ", user);
 
 			//* destructuring
 			const { title, description, price, brand, size, color, city, condition } =
@@ -80,8 +80,8 @@ router.post(
 						convertToBase64(req.files.picture),
 						{
 							//folder: `Vinted/${newOffer._id}`,
-							folder: `Vinted/VintedOffers`,
-							public_id: `img_offer${newOffer.username}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							folder: `Vinted/VintedOffers/ImagesOffers/${title}`,
+							public_id: `img_offer${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -105,19 +105,20 @@ router.post(
 								{
 									//folder: `Vinted/${newOffer._id}`,
 									folder: `Vinted/VintedOffers/Array_Images`,
-									public_id: `imgs_offer${newOffer.product_name}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									public_id: `imgs_offer`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 
 							// ajout de l'image dans newOffer
 							newOffer.product_image = result;
 							newOffer.product_pictures.push(result);
-						} else {
+						}
+						else {
 							// On envoie toutes les autres à cloudinary et on met les résultats dans product_pictures
 							const result = await cloudinary.uploader.upload(
 								convertToBase64(picture),
 								{
-									folder: `Vinted/VintedOffers/Array_Images`,
-									public_id: `imgs_offer${newOffer._id}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									folder: `Vinted/VintedOffers/Array_Images/${newOffer._id}`,
+									public_id: `imgs_offer`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 							newOffer.product_pictures.push(result);
 						}
@@ -135,7 +136,7 @@ router.post(
 			}
 
 		} catch (error) {
-			console.log(error.response.data);
+			// console.log(error.response.data);
 			res.status(400).json({ message: error.message });
 		}
 	}
@@ -144,7 +145,7 @@ router.post(
 // Route qui nous permet de récupérer une liste d'annonces, en fonction de filtres
 // Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
 router.get("/offers", async (req, res) => {
-	//? url http://127.0.0.1:3000/offers
+	//? url http://127.0.0.1:3100/offers
 	try {
 		//// Afficher toutes les offres : const results = await Offer.find();
 		//! Afficher les produits qui contienne le nom "sac" :
