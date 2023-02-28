@@ -70,7 +70,8 @@ router.post(
 				});
 
 				// Si on ne reçoit qu'une image (req.files.picture n'est donc pas un tableau)
-				if (!Array.isArray(req.files.picture)) {
+				if (!Array.isArray(req.files.picture) && !Array.isArray(req.files.images)) {
+
 					// On vérifie qu'on a bien affaire à une image
 					if (req.files.picture.mimetype.slice(0, 5) !== "image") { // vérifier si les 5 premiers caractères de la clé mimetype forme le mot 'image'
 						return res.status(400).json({ message: "You must send images" });
@@ -81,7 +82,7 @@ router.post(
 						{
 							//folder: `Vinted/${newOffer._id}`,
 							folder: `Vinted/VintedOffers/ImagesOffers/${title}`,
-							public_id: `img_offer${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							public_id: `img_offerg_ + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -91,8 +92,8 @@ router.post(
 				} else {
 
 					//! Si on reçoit plusieurs images donc on a affaire à un tableau
-					for (let i = 0; i < req.files.picture.length; i++) {
-						const picture = req.files.picture[i];
+					for (let i = 0; i < req.files.images.length; i++) {
+						const picture = req.files.images[i];
 
 						if (picture.mimetype.slice(0, 5) !== "image") {
 							return res.status(400).json({ message: "You must send images" });
@@ -103,9 +104,9 @@ router.post(
 							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 								convertToBase64(picture),
 								{
-									//folder: `Vinted/${newOffer._id}`,
-									folder: `Vinted/VintedOffers/Array_Images`,
-									public_id: `imgs_offer`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									//folder: `Vinted / ${ newOffer._id }`,
+									folder: `Vinted / VintedOffers / Array_Images`,
+									public_id: `imgs_offer, + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 
 							// ajout de l'image dans newOffer
@@ -117,8 +118,8 @@ router.post(
 							const result = await cloudinary.uploader.upload(
 								convertToBase64(picture),
 								{
-									folder: `Vinted/VintedOffers/Array_Images/${newOffer._id}`,
-									public_id: `imgs_offer`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									folder: `Vinted / VintedOffers / Array_Images / ${i}`,
+									public_id: `imgs_offer`   //+ ${title} donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 							newOffer.product_pictures.push(result);
 						}
@@ -136,7 +137,7 @@ router.post(
 			}
 
 		} catch (error) {
-			// console.log(error.response.data);
+			console.log(error.response.data);
 			res.status(400).json({ message: error.message });
 		}
 	}
@@ -218,7 +219,7 @@ router.get("/offers", async (req, res) => {
 		// cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
 		const count = await Offer.countDocuments(filters);
 
-		console.log(offers);
+		// console.log(offers);
 		res.json({
 			count: count,
 			offers: offers,
@@ -244,7 +245,7 @@ router.get("/offer/:id", async (req, res) => {
 				select: "account.username account.phone account.avatar",
 			});
 
-		console.log("offer:", offer);
+		// console.log("offer:", offer);
 
 		res.json(offer);
 
