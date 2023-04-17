@@ -17,7 +17,6 @@ router.post("/user/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
 
-		//todo Tester l'email:  (pour test :  "email": "antechrist@mail.com", "password": "fuckyou"
 		// Aller chercher le user dont le mail est celui reçu
 		const alreadyUser = await User.findOne({ email: email }); //{ email: req.body.email }
 		// attention si valeur nulle, va ds le catch si console.log(`-mail User: `, alreadyUser.email, alreadyUser);

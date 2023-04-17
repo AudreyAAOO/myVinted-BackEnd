@@ -13,7 +13,7 @@ const User = require("../models/User");
 
 //! CREATE
 //todo création d'une route pour SIGN-UP
-// url http://127.0.0.1:3000/user/signup
+// url http://127.0.0.1:3200/user/signup
 router.post("/user/signup", fileUpload(), async (req, res) => {
 	//console.log(req.body);
 
@@ -71,7 +71,6 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
 				const result = await cloudinary.uploader.upload(
 					convertToBase64(req.files.avatar),
 						{
-							//folder: `Vinted/${newOffer._id}`,
 							folder: `Vinted/VintedAvatars`,
 							public_id: "avatar_img", // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						 }

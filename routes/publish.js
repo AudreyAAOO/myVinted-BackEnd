@@ -31,7 +31,7 @@ router.post(
 		try {
 			console.log("je suis dans ma route");
 			// Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
-			console.log(req.files); // afficher les fichiers reçus
+			console.log("photos: ", req.files); // afficher les fichiers reçus
 
 			// Les champs textuels du body sont disponibles dans req.body
 			//console.log(req.body); 
@@ -49,7 +49,7 @@ router.post(
 			const { title, description, price, brand, size, color, city, condition } =
 				req.body;
 
-			if (title && price && req.files.picture) {
+			if (title && price && req.files.picture) { //!
 				//todo je crée une nouvelle annonce sans l'image
 				const newOffer = new Offer({
 					product_name: title,
@@ -82,7 +82,7 @@ router.post(
 						{
 							//folder: `Vinted/${newOffer._id}`,
 							folder: `Vinted/VintedOffers/ImagesOffers/${title}`,
-							public_id: `img_offerg_ + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							// public_id: `img_offerg_ + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -106,7 +106,7 @@ router.post(
 								{
 									//folder: `Vinted / ${ newOffer._id }`,
 									folder: `Vinted / VintedOffers / Array_Images`,
-									public_id: `imgs_offer, + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									// public_id: `imgs_offer, + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 
 							// ajout de l'image dans newOffer
@@ -137,7 +137,8 @@ router.post(
 			}
 
 		} catch (error) {
-			console.log(error.response.data);
+			// console.log(error.response.data);
+			console.log("catch: ", error);
 			res.status(400).json({ message: error.message });
 		}
 	}
@@ -147,6 +148,7 @@ router.post(
 // Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
 router.get("/offers", async (req, res) => {
 	//? url http://127.0.0.1:3100/offers
+	console.log("route offer: ", req.query);
 	try {
 		//// Afficher toutes les offres : const results = await Offer.find();
 		//! Afficher les produits qui contienne le nom "sac" :
@@ -196,7 +198,7 @@ router.get("/offers", async (req, res) => {
 		}
 		//   SKIP ET LIMIT
 		let limit = Number(req.query.limit);
-
+		console.log(page, limit);
 		//.skip(10) // = sauter l'affichage des 10 premières annonces
 		const offers = await Offer.find((filters)
 			// { product_name: new RegExp("sac", "i") },

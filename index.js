@@ -40,7 +40,7 @@ const signup = require("./routes/signup");
 const login = require("./routes/login");
 const publish = require("./routes/publish");
 const payment = require("./routes/payment");
-//const test = require("./routes/test");
+
 
 
 //! je demande à mon serveur d'utiliser les routes importées app.use ("");
@@ -48,7 +48,6 @@ app.use(signup);
 app.use(login);
 app.use(publish);
 app.use(payment);
-//app.use(test);
 
 
 app.get("/", (req, res) => {
@@ -59,6 +58,6 @@ app.all("*", (req, res) => {
 	res.status(404).json({ message: "⚠️ This route doesn't exist !!! ⚠️" });
 });
 
-app.listen(process.env.PORT || 3100, () => {
+app.listen(process.env.PORT || 3200, () => {
 	console.log(" 🚀 Server started !!! 🚀");
 });
