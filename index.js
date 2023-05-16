@@ -3,11 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan"); // affiche des logs de connexion
 
-//const uid2 = require("uid2"); //?  package qui génère une chaîne de caractères aléatoires
-//? crypto-js est une librairie d'algorithmes cryptographiques.
-//const SHA256 = require("crypto-js/sha256"); //? package pour encrypter une string
-//const encBase64 = require("crypto-js/enc-base64"); //? package pour transformer l'encryptage en string
-// La ligne suivante ne doit être utilisée qu'une seule fois et au tout début du projet. De préférence dans index.js
 require("dotenv").config(); // Permet d'activer les variables d'environnement qui se trouvent dans le fichier `.env`
 
 //* création du serveur
@@ -38,7 +33,7 @@ connectDatabase();
 //! import des routes
 const signup = require("./routes/signup");
 const login = require("./routes/login");
-const publish = require("./routes/publish");
+const offers = require("./routes/offers");
 const payment = require("./routes/payment");
 
 
@@ -46,7 +41,7 @@ const payment = require("./routes/payment");
 //! je demande à mon serveur d'utiliser les routes importées app.use ("");
 app.use(signup);
 app.use(login);
-app.use(publish);
+app.use(offers);
 app.use(payment);
 
 

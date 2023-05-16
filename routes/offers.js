@@ -11,6 +11,7 @@ const Offer = require("../models/Offer");
 
 //! import du middleware isAuthenticated
 const isAuthenticated = require("../middlewares/isAuthenticated");
+
 const convertToBase64 = require("../utils/convertToBase64");
 //const { countDocuments } = require("../models/User");
 
@@ -37,7 +38,7 @@ router.post(
 			//console.log(req.body); 
 
 			// J'ai accès à req.user. Clef que j'ai stockée dans req dans le middleware isAuthenticated
-			//console.log(req.user);
+			console.log(req.user);
 
 			// Je converti le fichier reçu en base64 et j'envoie l'image sur cloudinary
 
@@ -82,7 +83,7 @@ router.post(
 						{
 							//folder: `Vinted/${newOffer._id}`,
 							folder: `Vinted/VintedOffers/ImagesOffers/${title}`,
-							// public_id: `img_offerg_ + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							public_id: `offer_${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 						}
 					);
 
@@ -105,7 +106,7 @@ router.post(
 								convertToBase64(picture),
 								{
 									//folder: `Vinted / ${ newOffer._id }`,
-									folder: `Vinted / VintedOffers / Array_Images`,
+									folder: `Vinted/VintedOffers/Array_Images`,
 									// public_id: `imgs_offer, + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
 
@@ -126,8 +127,8 @@ router.post(
 					}
 				}
 
-				await newOffer.save();
-
+				//await newOffer.save();
+				console.log("_____________newOffer: ", newOffer);
 				res.json(newOffer);
 
 			} else {
@@ -147,7 +148,7 @@ router.post(
 // Route qui nous permet de récupérer une liste d'annonces, en fonction de filtres
 // Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
 router.get("/offers", async (req, res) => {
-	//? url http://127.0.0.1:3100/offers
+	//? url http://127.0.0.1:3001/offers
 	console.log("route offer: ", req.query);
 	try {
 		//// Afficher toutes les offres : const results = await Offer.find();
@@ -196,6 +197,7 @@ router.get("/offers", async (req, res) => {
 		} else {
 			page = Number(req.query.page);
 		}
+		
 		//   SKIP ET LIMIT
 		let limit = Number(req.query.limit);
 		console.log(page, limit);
@@ -235,7 +237,7 @@ router.get("/offers", async (req, res) => {
 
 // Route qui permmet de récupérer les informations d'une offre en fonction de son id
 router.get("/offer/:id", async (req, res) => {
-	//? url http://127.0.0.1:3000/offer/:id
+	//? url http://127.0.0.1:3001/offer/:id
 	try {
 		const id = req.params.id; // ne pas noter les : dans Postman
 		//console.log(id);

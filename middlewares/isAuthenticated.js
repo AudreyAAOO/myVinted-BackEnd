@@ -19,6 +19,7 @@ const isAuthenticated = async (req, res, next) => {
 				// On crée une clé "user" dans req. La route dans laquelle le middleware est appelé pourra avoir accès à req.user
 				return next();
 			}
+			
 		} else {
 			console.log("je suis dans le else req.headers.authorization");
 			return res.status(401).json({ error: "Unauthorized ⛔" });
