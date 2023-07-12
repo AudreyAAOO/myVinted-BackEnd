@@ -30,15 +30,14 @@ router.post(
 	fileUpload(),
 	async (req, res) => {
 		try {
-			console.log("je suis dans ma route");
-			// Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
-			console.log("photos: ", req.files); // afficher les fichiers reçus
+			//? Les fichiers reçus sont dans req.files : renvoie un objet ou un tableau si plusieurs images
+			// console.log("********************** req.files : ", req.files); // afficher les fichiers reçus
 
-			// Les champs textuels du body sont disponibles dans req.body
-			//console.log(req.body); 
+			//? Les champs textuels du body sont disponibles dans req.body
+			// console.log("req.body : ", req.body); 
 
-			// J'ai accès à req.user. Clef que j'ai stockée dans req dans le middleware isAuthenticated
-			console.log(req.user);
+			//? J'ai accès à req.user. Clef que j'ai stockée dans req dans le middleware isAuthenticated
+			// console.log("req.user : ", req.user);
 
 			// Je converti le fichier reçu en base64 et j'envoie l'image sur cloudinary
 
@@ -81,17 +80,14 @@ router.post(
 					const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 						convertToBase64(req.files.picture),
 						{
-							//folder: `Vinted/${newOffer._id}`,
 							folder: `Vinted/VintedOffers/ImagesOffers/${title}`,
-							public_id: `offer_${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+							public_id: `offer_${title}`, // donner un nom par défaut plutôt que la string aléatoire générée par Cloudinary
 						}
 					);
-
 					// ajout de l'image dans newOffer
 					newOffer.product_image = result;
-					newOffer.product_pictures.push(result);
+					newOffer.product_pictures.push(result); //?
 				} else {
-
 					//! Si on reçoit plusieurs images donc on a affaire à un tableau
 					for (let i = 0; i < req.files.images.length; i++) {
 						const picture = req.files.images[i];
@@ -101,44 +97,37 @@ router.post(
 						}
 
 						if (i === 0) {
-							// On envoie la première image à cloudinary et on en fait l'image principale (product_image)
+							//? On envoie la première image à cloudinary et on en fait l'image principale (product_image)
 							const result = await cloudinary.uploader.upload(  // Envoi de l'image à cloudinary
 								convertToBase64(picture),
 								{
-									//folder: `Vinted / ${ newOffer._id }`,
 									folder: `Vinted/VintedOffers/Array_Images`,
-									// public_id: `imgs_offer, + ${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+									public_id: `offer_${title}`, // donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
 								});
-
-							// ajout de l'image dans newOffer
+							//? ajout de l'image dans newOffer
 							newOffer.product_image = result;
 							newOffer.product_pictures.push(result);
 						}
 						else {
-							// On envoie toutes les autres à cloudinary et on met les résultats dans product_pictures
+							//? On envoie toutes les autres à cloudinary et on met les résultats dans product_pictures
 							const result = await cloudinary.uploader.upload(
 								convertToBase64(picture),
 								{
-									folder: `Vinted / VintedOffers / Array_Images / ${i}`,
-									public_id: `imgs_offer`   //+ ${title} donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
-								});
-							newOffer.product_pictures.push(result);
+									folder: `Vinted/VintedOffers/Array_Images/${i}`,
+									public_id: `imgsOffer_${title}`,
+									//? ${title} donner un nom par défaut plutôt que la string alatoire générée par Cloudinary
+								});							newOffer.product_pictures.push(result);
 						}
 					}
 				}
-
-				//await newOffer.save();
-				console.log("_____________newOffer: ", newOffer);
+				await newOffer.save();
 				res.json(newOffer);
-
 			} else {
 				res
 					.status(400)
 					.json({ message: "title, price and picture are required" });
 			}
-
 		} catch (error) {
-			// console.log(error.response.data);
 			console.log("catch: ", error);
 			res.status(400).json({ message: error.message });
 		}
@@ -146,12 +135,12 @@ router.post(
 );
 
 // Route qui nous permet de récupérer une liste d'annonces, en fonction de filtres
-// Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
+//? Si aucun filtre n'est envoyé, cette route renverra l'ensemble des annonces
 router.get("/offers", async (req, res) => {
 	//? url http://127.0.0.1:3001/offers
-	console.log("route offer: ", req.query);
+	// console.log("route offer: ", req.query);
 	try {
-		//// Afficher toutes les offres : const results = await Offer.find();
+		// Afficher toutes les offres : const results = await Offer.find();
 		//! Afficher les produits qui contienne le nom "sac" :
 		//const results = await Offer.find({product_name: new RegExp("sac", "i")});
 		//! Afficher un prix minimum et maximum
@@ -200,7 +189,7 @@ router.get("/offers", async (req, res) => {
 		
 		//   SKIP ET LIMIT
 		let limit = Number(req.query.limit);
-		console.log(page, limit);
+		// console.log(page, limit);
 		//.skip(10) // = sauter l'affichage des 10 premières annonces
 		const offers = await Offer.find((filters)
 			// { product_name: new RegExp("sac", "i") },
@@ -240,7 +229,6 @@ router.get("/offer/:id", async (req, res) => {
 	//? url http://127.0.0.1:3001/offer/:id
 	try {
 		const id = req.params.id; // ne pas noter les : dans Postman
-		//console.log(id);
 
 		const offer = await Offer.findById(id)
 			//.select("_id product_details owner")
@@ -248,11 +236,7 @@ router.get("/offer/:id", async (req, res) => {
 				path: "owner",
 				select: "account.username account.phone account.avatar",
 			});
-
-		// console.log("offer:", offer);
-
 		res.json(offer);
-
 	} catch (error) {
 		console.log(error.message);
 		res.status(400).json({ message: error.message });

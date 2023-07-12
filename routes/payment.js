@@ -42,7 +42,9 @@ router.post("/payment", async (req, res) => {
 
         // Je renvoie au client le status de la réponse de stripe
         res.json(newTransaction.status);
+        console.log("newTransaction.status", newTransaction.status);
         res.json(response);
+        console.log("response", response);
     } catch (error) {
         console.log("error.message: ", error.message);
         res.status(400).json({ message: error.message });
