@@ -15,29 +15,32 @@ router.post("/payment", async (req, res) => {
         const stripeToken = req.body.stripeToken;// Réception du token créer via l'API Stripe depuis le front
 
         // Créer une requête à stripe pour créer une transaction
-        const newTransaction = await stripe.charges.create({
+        const payment = await stripe.charges.create({
             amount: req.body.amount,
             currency: req.body.currency,
             title: req.body.title,
-            source: stripeToken,  // On envoie ici le token
+            token: stripeToken,  // On envoie ici le token
+            date_of_payment: new Date(date_of_payment)
         });
 
         console.log("response.status: ", response.status);
 
         // TODO
         // Si le paiement est effectué, on met à jour l'offre et on renvoie au front le fait que tout s'est bien passé
-        console.log("responseFromStripe :", newTransaction);
+        console.log("responseFromStripe- payment :", payment);
+
+ // Crée une transaction grâce au model
+ const newTransaction = new Transaction({ amount, currency, title, token, date_of_payment  });
 
         // Sauvegarder la transaction dans une BDD MongoDB
         await newTransaction.save();
         const response = {
-            _id: newTransaction._id,
+            // _id: newTransaction._id,
             amount: newTransaction.amount,
             currency: newTransaction.currency,
             title: newTransaction.title,
-            source: newTransaction.stripeToken,
+            token: newTransaction.stripeToken,
             date_of_payment: { type: Date, default: Date.now },
-            // email: newTransaction.email,
         };
 
         // Je renvoie au client le status de la réponse de stripe
